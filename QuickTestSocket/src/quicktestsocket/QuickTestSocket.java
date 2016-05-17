@@ -5,10 +5,9 @@
  */
 package quicktestsocket;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  *
@@ -16,30 +15,41 @@ import java.net.UnknownHostException;
  */
 public class QuickTestSocket {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        testSocket();
-    }
+    static final String HOST = "127.0.0.1";
+    static final int PORT = 4444;
 
+    
     public static void testSocket() {
         try {
+            // Create the socket
+            Socket clientSocket = new Socket(HOST, PORT);
+            // Create the input & output streams to the server
+            ObjectOutputStream outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
+            ObjectInputStream inFromServer = new ObjectInputStream(clientSocket.getInputStream());
 
-            String message = "TEST!";
-            String serverIp = "145.24.222.149";
+            /* Create The Message Object to send */
+            Ship msg = new Ship(748382, "Groot");
 
-            Socket client = new Socket(serverIp, 4444);  //connect to server
-            PrintWriter printwriter = new PrintWriter(client.getOutputStream(), true);
-            printwriter.write(message);  //write the message to output stream
+            /* Send the Message Object to the server */
+            outToServer.writeObject(msg);
 
-            printwriter.flush();
-            printwriter.close();
-            client.close();   //closing the connection
+            /* Retrieve the Message Object from server */
+            Ship msgFrmServer = null;
+            msgFrmServer = (Ship) inFromServer.readObject();
 
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            /* Print out the recived Message */
+            System.out.println("MMSI: " + msgFrmServer.MMSI);
+            System.out.println("Type: " + msgFrmServer.type);
+
+            outToServer.flush();
+            outToServer.close();
+            inFromServer.close();
+            clientSocket.close();
+
+        } catch (Exception e) {
+            System.err.println("Client Error: " + e.getMessage());
+            System.err.println("Localized: " + e.getLocalizedMessage());
+            System.err.println("Stack Trace: " + e.getStackTrace());
             e.printStackTrace();
         }
     }
