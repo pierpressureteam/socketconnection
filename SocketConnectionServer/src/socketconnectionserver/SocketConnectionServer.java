@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import ships.Ship;
 
 /**
  *
@@ -41,8 +42,8 @@ public class SocketConnectionServer {
                 ObjectInputStream inFromClient = new ObjectInputStream(clientSocket.getInputStream());
 
                 Ship inMsg = (Ship) inFromClient.readObject();
-                System.out.println(inMsg.MMSI);
-                System.out.println(inMsg.type);
+                System.out.println(inMsg.getMMSI());
+                System.out.println(inMsg.getType());
 
                 inMsg.setMMSI(inMsg.getMMSI() + 5000);
                 inMsg.setType("Groter");

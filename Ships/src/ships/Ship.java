@@ -3,7 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package quicktestsocket;
+package ships;
+
 
 import java.io.Serializable;
 
@@ -38,3 +39,4 @@ public class Ship implements Serializable {
         this.type = type;
     }
 }
+

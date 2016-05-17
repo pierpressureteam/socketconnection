@@ -8,6 +8,8 @@ package quicktestsocket;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import ships.Ship;
+
 
 /**
  *
@@ -17,6 +19,10 @@ public class QuickTestSocket {
 
     static final String HOST = "127.0.0.1";
     static final int PORT = 4444;
+    
+    public static void main(String[] args) {
+        testSocket();
+    }
 
     
     public static void testSocket() {
@@ -28,7 +34,7 @@ public class QuickTestSocket {
             ObjectInputStream inFromServer = new ObjectInputStream(clientSocket.getInputStream());
 
             /* Create The Message Object to send */
-            Ship msg = new Ship(748382, "Groot");
+            Ship msg = new Ship(10000, "Groot");
 
             /* Send the Message Object to the server */
             outToServer.writeObject(msg);
@@ -38,8 +44,8 @@ public class QuickTestSocket {
             msgFrmServer = (Ship) inFromServer.readObject();
 
             /* Print out the recived Message */
-            System.out.println("MMSI: " + msgFrmServer.MMSI);
-            System.out.println("Type: " + msgFrmServer.type);
+            System.out.println("MMSI: " + msgFrmServer.getMMSI());
+            System.out.println("Type: " + msgFrmServer.getType());
 
             outToServer.flush();
             outToServer.close();
