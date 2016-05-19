@@ -17,7 +17,8 @@ public class SocketClient {
     
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         SocketClient sc = new SocketClient();
-        sc.communicateWithSocket(1, PORT);
+        int i = (Integer) sc.communicateWithSocket(1, PORT);
+        System.out.println(i);
     }
     
     public SocketClient() {

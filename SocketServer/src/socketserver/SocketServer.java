@@ -47,11 +47,13 @@ public class SocketServer {
                         ServerSocket loginSocketOut = new ServerSocket(LOGINPORTOUT);
                         Socket clientSocketOut = loginSocketOut.accept();
                         Socket clientSocketIn = loginSocketIn.accept();
-
+                        System.out.println("HOIW!I!");
                         // Create input and output streams to client
                         ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketOut.getOutputStream());
                         ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
 
+                        System.out.println("HOII!!!");
+                        
                         boolean canUserContinue = validateUser(inFromClient.readObject());
 
                         outToClient.writeObject(canUserContinue);
@@ -79,12 +81,17 @@ public class SocketServer {
                         Socket clientSocketOut = dataSocketOut.accept();
                         Socket clientSocketIn = dataSocketIn.accept();
 
+                        
+                        System.out.println("HOI");
+                        
                         // Create input and output streams to client
                         ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketOut.getOutputStream());
                         ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
 
                         Object checkedObject = checkObject(inFromClient.readObject());
 
+                        System.out.println("HOI!");
+                        
                         outToClient.writeObject(checkedObject);
                     } catch (IOException | ClassNotFoundException ex) {
                         ex.printStackTrace();
