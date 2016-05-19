@@ -12,12 +12,12 @@ import java.net.Socket;
 public class SocketClient {
 
     private static final String HOST = "oveldman.ddns.net";
-    private static int PORT = 26;
+    private static int PORT = 32000;
 
     
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         SocketClient sc = new SocketClient();
-        sc.communicateWithSocket(1, 4444);
+        sc.communicateWithSocket(1, PORT);
     }
     
     public SocketClient() {
