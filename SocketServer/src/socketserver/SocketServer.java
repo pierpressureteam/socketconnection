@@ -20,8 +20,8 @@ import objectslibrary.User;
  */
 public class SocketServer {
 
-    static final int DATAPORT = 4444;
-    static final int LOGINPORT = 4445;
+    static final int DATAPORT = 26;
+    static final int LOGINPORT = 40;
 
     public static void main(String[] args) throws IOException, SQLException {
 

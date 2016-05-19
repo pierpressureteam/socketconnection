@@ -11,9 +11,15 @@ import java.net.Socket;
  */
 public class SocketClient {
 
-    private static final String HOST = "127.0.0.1";
-    private static int PORT = 4444;
+    private static final String HOST = "oveldman.ddns.net";
+    private static int PORT = 26;
 
+    
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        SocketClient sc = new SocketClient();
+        sc.communicateWithSocket(1, 4444);
+    }
+    
     public SocketClient() {
 
     }
