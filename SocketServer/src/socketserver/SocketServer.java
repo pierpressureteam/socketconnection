@@ -30,47 +30,47 @@ public class SocketServer {
         System.out.println("DATAPORT: " + DATAPORTIN);
         System.out.println("LOGINPORT: " + LOGINPORTIN);
         
-        startLoginServer();
+//        startLoginServer();
         startDataServer();
 
     }
 
-    public static void startLoginServer() throws IOException {
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                System.out.println("Login socket started.");
-                while (true) {
-                    try {
-                        // Create the Client Socket
-                        ServerSocket loginSocketIn = new ServerSocket(LOGINPORTIN);
-                        ServerSocket loginSocketOut = new ServerSocket(LOGINPORTOUT);
-                        Socket clientSocketOut = loginSocketOut.accept();
-                        Socket clientSocketIn = loginSocketIn.accept();
-                        System.out.println("HOIW!I!");
-                        // Create input and output streams to client
-                        ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketOut.getOutputStream());
-                        ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
-
-                        System.out.println("HOII!!!");
-                        
-                        boolean canUserContinue = validateUser(inFromClient.readObject());
-
-                        outToClient.writeObject(canUserContinue);
-                    } catch (IOException | ClassNotFoundException | SQLException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        };
-        thread.start();
-    }
+//    public static void startLoginServer() throws IOException {
+////        Thread thread = new Thread() {
+////            @Override
+////            public void run() {
+//                System.out.println("Login socket started.");
+//                while (true) {
+//                    try {
+//                        // Create the Client Socket
+//                        ServerSocket loginSocketIn = new ServerSocket(LOGINPORTIN);
+//                        ServerSocket loginSocketOut = new ServerSocket(LOGINPORTOUT);
+//                        Socket clientSocketOut = loginSocketOut.accept();
+//                        Socket clientSocketIn = loginSocketIn.accept();
+//                        System.out.println("HOIW!I!");
+//                        // Create input and output streams to client
+//                        ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketOut.getOutputStream());
+//                        ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
+//
+//                        System.out.println("HOII!!!");
+//                        
+//                        boolean canUserContinue = validateUser(inFromClient.readObject());
+//
+//                        outToClient.writeObject(canUserContinue);
+//                    } catch (IOException | ClassNotFoundException | SQLException ex) {
+//                        ex.printStackTrace();
+//                    }
+//                }
+////            }
+////        };
+////        thread.start();
+//    }
 
     public static void startDataServer() throws IOException {
 
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
+//        Thread thread = new Thread() {
+//            @Override
+//            public void run() {
                 System.out.println("Data socket started.");
 
                 while (true) {
@@ -98,9 +98,9 @@ public class SocketServer {
                     }
 
                 }
-            }
-        };
-        thread.start();
+//            }
+//        };
+//        thread.start();
 
     }
 
@@ -121,7 +121,7 @@ public class SocketServer {
                 return i;
             }
         }
-        return null;
+        return 100;
     }
 
     public static boolean validateUser(Object obj) throws SQLException {
