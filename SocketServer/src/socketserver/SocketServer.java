@@ -20,87 +20,39 @@ import objectslibrary.User;
  */
 public class SocketServer {
 
-    static final int DATAPORTIN = 32000;
-    static final int LOGINPORTIN = 32001;
-    static final int DATAPORTOUT = 32003;
-    static final int LOGINPORTOUT = 32004;
+    static final int PORT = 32000;
 
     public static void main(String[] args) throws IOException, SQLException {
 
-        System.out.println("DATAPORT: " + DATAPORTIN);
-//        System.out.println("LOGINPORT: " + LOGINPORTIN);
-        
-//        startLoginServer();
+        System.out.println("PORT IN USE: " + PORT);
         startDataServer();
 
     }
 
-//    public static void startLoginServer() throws IOException {
-////        Thread thread = new Thread() {
-////            @Override
-////            public void run() {
-//                System.out.println("Login socket started.");
-//                while (true) {
-//                    try {
-//                        // Create the Client Socket
-//                        ServerSocket loginSocketIn = new ServerSocket(LOGINPORTIN);
-//                        ServerSocket loginSocketOut = new ServerSocket(LOGINPORTOUT);
-//                        Socket clientSocketOut = loginSocketOut.accept();
-//                        Socket clientSocketIn = loginSocketIn.accept();
-//                        System.out.println("HOIW!I!");
-//                        // Create input and output streams to client
-//                        ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketOut.getOutputStream());
-//                        ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
-//
-//                        System.out.println("HOII!!!");
-//                        
-//                        boolean canUserContinue = validateUser(inFromClient.readObject());
-//
-//                        outToClient.writeObject(canUserContinue);
-//                    } catch (IOException | ClassNotFoundException | SQLException ex) {
-//                        ex.printStackTrace();
-//                    }
-//                }
-////            }
-////        };
-////        thread.start();
-//    }
 
     public static void startDataServer() throws IOException {
 
-//        Thread thread = new Thread() {
-//            @Override
-//            public void run() {
                 System.out.println("Data socket started.");
 
                 while (true) {
                     try {
                         // Create the Client Socket
-//                        ServerSocket dataSocketOut = new ServerSocket(DATAPORTOUT);
-                        ServerSocket dataSocketIn = new ServerSocket(DATAPORTIN);
-//                        Socket clientSocketOut = dataSocketOut.accept();
+                        ServerSocket dataSocketIn = new ServerSocket(PORT);
                         Socket clientSocketIn = dataSocketIn.accept();
-
-                        
-                        System.out.println("HOI");
                         
                         // Create input and output streams to client
                         ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketIn.getOutputStream());
                         ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
 
                         Object checkedObject = checkObject(inFromClient.readObject());
-
-                        System.out.println("HOI!");
                         
                         outToClient.writeObject(checkedObject);
+                        
                     } catch (IOException | ClassNotFoundException ex) {
-                        ex.printStackTrace();
+                        System.out.println(ex.getMessage());
                     }
 
                 }
-//            }
-//        };
-//        thread.start();
 
     }
 
