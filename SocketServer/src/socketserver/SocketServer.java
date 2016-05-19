@@ -20,11 +20,16 @@ import objectslibrary.User;
  */
 public class SocketServer {
 
-    static final int DATAPORT = 32000;
-    static final int LOGINPORT = 32001;
+    static final int DATAPORTIN = 32000;
+    static final int LOGINPORTIN = 32001;
+    static final int DATAPORTOUT = 32003;
+    static final int LOGINPORTOUT = 32004;
 
     public static void main(String[] args) throws IOException, SQLException {
 
+        System.out.println("DATAPORT: " + DATAPORTIN);
+        System.out.println("LOGINPORT: " + LOGINPORTIN);
+        
         startLoginServer();
         startDataServer();
 
@@ -38,12 +43,14 @@ public class SocketServer {
                 while (true) {
                     try {
                         // Create the Client Socket
-                        ServerSocket loginSocket = new ServerSocket(LOGINPORT);
-                        Socket clientSocket = loginSocket.accept();
+                        ServerSocket loginSocketIn = new ServerSocket(LOGINPORTIN);
+                        ServerSocket loginSocketOut = new ServerSocket(LOGINPORTOUT);
+                        Socket clientSocketOut = loginSocketOut.accept();
+                        Socket clientSocketIn = loginSocketIn.accept();
 
                         // Create input and output streams to client
-                        ObjectOutputStream outToClient = new ObjectOutputStream(clientSocket.getOutputStream());
-                        ObjectInputStream inFromClient = new ObjectInputStream(clientSocket.getInputStream());
+                        ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketOut.getOutputStream());
+                        ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
 
                         boolean canUserContinue = validateUser(inFromClient.readObject());
 
@@ -67,12 +74,14 @@ public class SocketServer {
                 while (true) {
                     try {
                         // Create the Client Socket
-                        ServerSocket dataSocket = new ServerSocket(DATAPORT);
-                        Socket clientSocket = dataSocket.accept();
+                        ServerSocket dataSocketOut = new ServerSocket(DATAPORTOUT);
+                        ServerSocket dataSocketIn = new ServerSocket(DATAPORTIN);
+                        Socket clientSocketOut = dataSocketOut.accept();
+                        Socket clientSocketIn = dataSocketIn.accept();
 
                         // Create input and output streams to client
-                        ObjectOutputStream outToClient = new ObjectOutputStream(clientSocket.getOutputStream());
-                        ObjectInputStream inFromClient = new ObjectInputStream(clientSocket.getInputStream());
+                        ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketOut.getOutputStream());
+                        ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
 
                         Object checkedObject = checkObject(inFromClient.readObject());
 
