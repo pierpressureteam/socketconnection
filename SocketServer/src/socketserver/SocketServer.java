@@ -1,4 +1,4 @@
-package socketconnectionserver;
+package socketserver;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,49 +11,55 @@ import ships.Ship;
  *
  * @author Roy van den Heuvel
  */
-public class SocketConnectionServer {
+public class SocketServer {
 
     static final int PORT = 4444;
 
     public static void main(String[] args) {
         startServer();
     }
+    
 
     public static void startServer() {
         try {
             ServerSocket welcomeSocket = new ServerSocket(PORT);
-            System.out.println("Socket created.");
 
             while (true) {
                 // Create the Client Socket
                 Socket clientSocket = welcomeSocket.accept();
-                System.out.println("Socket accepted.");
 
                 // Create input and output streams to client
                 ObjectOutputStream outToClient = new ObjectOutputStream(clientSocket.getOutputStream());
                 ObjectInputStream inFromClient = new ObjectInputStream(clientSocket.getInputStream());
 
-                /* Read the object the client has sent from the inputstream */
-                Ship inMsg = (Ship) inFromClient.readObject();
-                System.out.println("Object as it was received: \n");
-                System.out.println(inMsg.getMMSI());
-                System.out.println(inMsg.getType());
-
-                /* Edits the object a little bit */
-                inMsg.setMMSI(inMsg.getMMSI() + 5000);
-                inMsg.setType("Groter");
-
-                System.out.println("Object as it was sent: \n");
-                System.out.println(inMsg.getMMSI());
-                System.out.println(inMsg.getType());
+                Object checkedObject = checkObject(inFromClient);
+                
+                
 
                 /* Send the modified object back */
-                outToClient.writeObject(inMsg);
+                outToClient.writeObject(checkedObject);
 
             }
 
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public static Object checkObject(Object obj){
+        if(obj != null){
+            int intFrmObj = (Integer) obj;
+            
+            if(intFrmObj == 1){
+                
+            }
+            if(intFrmObj == 2){
+                
+            }
+            if(intFrmObj == 3){
+                
+            }
+        }
+        return null;
     }
 }
