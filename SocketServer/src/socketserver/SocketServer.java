@@ -28,7 +28,7 @@ public class SocketServer {
     public static void main(String[] args) throws IOException, SQLException {
 
         System.out.println("DATAPORT: " + DATAPORTIN);
-        System.out.println("LOGINPORT: " + LOGINPORTIN);
+//        System.out.println("LOGINPORT: " + LOGINPORTIN);
         
 //        startLoginServer();
         startDataServer();
@@ -76,16 +76,16 @@ public class SocketServer {
                 while (true) {
                     try {
                         // Create the Client Socket
-                        ServerSocket dataSocketOut = new ServerSocket(DATAPORTOUT);
+//                        ServerSocket dataSocketOut = new ServerSocket(DATAPORTOUT);
                         ServerSocket dataSocketIn = new ServerSocket(DATAPORTIN);
-                        Socket clientSocketOut = dataSocketOut.accept();
+//                        Socket clientSocketOut = dataSocketOut.accept();
                         Socket clientSocketIn = dataSocketIn.accept();
 
                         
                         System.out.println("HOI");
                         
                         // Create input and output streams to client
-                        ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketOut.getOutputStream());
+                        ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketIn.getOutputStream());
                         ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
 
                         Object checkedObject = checkObject(inFromClient.readObject());
