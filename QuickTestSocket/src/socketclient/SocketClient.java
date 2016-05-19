@@ -18,7 +18,7 @@ public class SocketClient {
 
     }
 
-    public static Object communicateWithSocket(Object obj) throws IOException, ClassNotFoundException {
+    public static Object communicateWithSocket(Object obj, int port) throws IOException, ClassNotFoundException {
         Socket clientSocket = new Socket(HOST, PORT);
 
         ObjectOutputStream outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
