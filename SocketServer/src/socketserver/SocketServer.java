@@ -8,7 +8,9 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import static socketserver.DatabaseConnection.myUrl;
 import static socketserver.DatabaseConnection.password;
 import static socketserver.DatabaseConnection.username;
@@ -23,46 +25,47 @@ public class SocketServer {
     static final int PORT = 32000;
 
     public static void main(String[] args) throws IOException, SQLException {
-
         System.out.println("PORT IN USE: " + PORT);
         startDataServer();
+    }
+
+    public static void startDataServer() throws IOException, SQLException {
+
+        System.out.println("Data socket started.");
+
+        while (true) {
+            try {
+                // Create the Client Socket
+                ServerSocket dataSocketIn = new ServerSocket(PORT);
+                Socket clientSocketIn = dataSocketIn.accept();
+
+                // Create input and output streams to client
+                ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketIn.getOutputStream());
+                ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
+
+                Object checkedObject = checkObject(inFromClient.readObject());
+
+                outToClient.writeObject(checkedObject);
+
+            } catch (IOException | ClassNotFoundException ex) {
+                System.out.println(ex.getMessage());
+            }
+
+        }
 
     }
 
+    public static Object checkObject(Object obj) throws SQLException {
 
-    public static void startDataServer() throws IOException {
+        ArrayList arrayFrmObj = (ArrayList) obj;
 
-                System.out.println("Data socket started.");
-
-                while (true) {
-                    try {
-                        // Create the Client Socket
-                        ServerSocket dataSocketIn = new ServerSocket(PORT);
-                        Socket clientSocketIn = dataSocketIn.accept();
-                        
-                        // Create input and output streams to client
-                        ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketIn.getOutputStream());
-                        ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
-
-                        Object checkedObject = checkObject(inFromClient.readObject());
-                        
-                        outToClient.writeObject(checkedObject);
-                        
-                    } catch (IOException | ClassNotFoundException ex) {
-                        System.out.println(ex.getMessage());
-                    }
-
-                }
-
-    }
-
-    public static Object checkObject(Object obj) {
-        if (obj != null) {
-            int intFrmObj = (Integer) obj;
+        if (arrayFrmObj != null) {
+            int intFrmObj = (Integer) arrayFrmObj.get(0);
 
             if (intFrmObj == 1) {
-                int i = 1;
-                return i;
+                //User validation
+                User userToValidate = (User) arrayFrmObj.get(1);
+                return validateUser(userToValidate);
             }
             if (intFrmObj == 2) {
                 int i = 2;
@@ -73,7 +76,7 @@ public class SocketServer {
                 return i;
             }
         }
-        return 100;
+        return null;
     }
 
     public static boolean validateUser(Object obj) throws SQLException {
@@ -86,6 +89,11 @@ public class SocketServer {
         ps.setString(1, user.getUsername());
         ps.setString(2, user.getPassword());
 
+        ps.execute();
+        ResultSet rs = ps.getResultSet();
+        if (rs.first()) {
+            return true;
+        }
         return false;
     }
 }
