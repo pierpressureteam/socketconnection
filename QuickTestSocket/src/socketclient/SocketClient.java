@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import objectslibrary.User;
 
 /**
  *
@@ -17,7 +19,13 @@ public class SocketClient {
     
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         SocketClient sc = new SocketClient();
-        int i = (Integer) SocketClient.communicateWithSocket(56487547, PORT);
+        ArrayList al = new ArrayList();
+        al.add("1");
+        User user = new User();
+        user.setPassword("test");
+        user.setUsername("test");
+        al.add(user);
+        int i = (Integer) SocketClient.communicateWithSocket(al, PORT);
         System.out.println(i);
     }
 
