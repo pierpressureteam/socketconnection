@@ -68,8 +68,8 @@ public class SocketServer {
                 return validateUser(userToValidate);
             }
             if (intFrmObj == 2) {
-                int i = 2;
-                return i;
+                User userToRegister = (User) arrayFrmObj.get(1);
+                return registerUser(userToRegister);
             }
             if (intFrmObj == 3) {
                 int i = 3;
@@ -78,11 +78,32 @@ public class SocketServer {
         }
         return null;
     }
+    
+    
+    public static boolean registerUser(Object obj) throws SQLException{
+        Connection conn = DriverManager.getConnection(myUrl, username, password);
+        
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO usersaccount(username, password, email) VALUES(?, ?, ?) RETURNING username");
+        
+        User user = (User) obj;
+        
+        ps.setString(1, user.getUsername());
+        ps.setString(2, user.getPassword());
+        ps.setString(3, user.getEmail());
+        
+        ResultSet rs = ps.executeQuery();
+      
+        if(rs.first()){
+            return true;
+        }
+        
+        return false;
+    }
 
     public static boolean validateUser(Object obj) throws SQLException {
         Connection conn = DriverManager.getConnection(myUrl, username, password);
 
-        PreparedStatement ps = conn.prepareStatement("SELECT * FROM usersaccount WHERE username = ? AND password = ?");
+        PreparedStatement ps = conn.prepareStatement("SELECT u.username FROM usersaccount u WHERE username = ? AND password = ?");
 
         User user = (User) obj;
 

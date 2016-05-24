@@ -13,7 +13,7 @@ import objectslibrary.User;
  */
 public class SocketClient {
 
-    private static final String HOST = "oveldman.ddns.net";
+    private static final String HOST = "127.0.0.1";
     private static int PORT = 32000;
 
     
@@ -22,8 +22,8 @@ public class SocketClient {
         ArrayList al = new ArrayList();
         al.add("1");
         User user = new User();
-        user.setPassword("test");
-        user.setUsername("test");
+        user.setPassword("admin");
+        user.setUsername("admin");
         al.add(user);
         int i = (Integer) SocketClient.communicateWithSocket(al, PORT);
         System.out.println(i);
