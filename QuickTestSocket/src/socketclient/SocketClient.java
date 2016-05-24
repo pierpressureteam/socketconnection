@@ -13,7 +13,7 @@ import objectslibrary.User;
  */
 public class SocketClient {
 
-    private static final String HOST = "127.0.0.1";
+    private static final String HOST = "145.24.222.149";
     private static int PORT = 32000;
 
     

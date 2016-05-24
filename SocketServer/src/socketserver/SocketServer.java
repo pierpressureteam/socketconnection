@@ -68,6 +68,7 @@ public class SocketServer {
                 return validateUser(userToValidate);
             }
             if (intFrmObj == 2) {
+                // User registration
                 User userToRegister = (User) arrayFrmObj.get(1);
                 return registerUser(userToRegister);
             }
@@ -93,11 +94,7 @@ public class SocketServer {
         
         ResultSet rs = ps.executeQuery();
       
-        if(rs.first()){
-            return true;
-        }
-        
-        return false;
+        return rs.first();
     }
 
     public static boolean validateUser(Object obj) throws SQLException {
@@ -112,9 +109,7 @@ public class SocketServer {
 
         ps.execute();
         ResultSet rs = ps.getResultSet();
-        if (rs.first()) {
-            return true;
-        }
-        return false;
+        
+        return rs.first();
     }
 }
