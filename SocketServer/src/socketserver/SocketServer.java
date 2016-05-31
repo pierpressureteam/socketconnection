@@ -10,11 +10,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import static socketserver.DatabaseConnection.myUrl;
 import static socketserver.DatabaseConnection.password;
 import static socketserver.DatabaseConnection.username;
 import objectslibrary.User;
+import objectslibrary.SocketObjectWrapper;
 
 /**
  *
@@ -23,32 +23,42 @@ import objectslibrary.User;
 public class SocketServer
 {
 
-    static final int PORT = 32000;
+    private static final int PORT = 32000;
 
     public static void main(String[] args) throws IOException, SQLException
     {
         System.out.println("PORT IN USE: " + PORT);
-        startDataServer();
+        SocketServer ss = new SocketServer();
+        ss.startDataServer(PORT);
     }
 
-    public static void startDataServer() throws IOException, SQLException
+    public SocketServer()
     {
 
-        System.out.println("Data socket started.");
+    }
 
+    /**
+     *
+     * @param port
+     * @throws IOException
+     * @throws SQLException
+     */
+    public void startDataServer(int port) throws IOException, SQLException
+    {
+        System.out.println("Data socket started.");
         while (true)
         {
             try
             {
                 // Create the Client Socket
-                ServerSocket dataSocketIn = new ServerSocket(PORT);
+                ServerSocket dataSocketIn = new ServerSocket(port);
                 Socket clientSocketIn = dataSocketIn.accept();
 
                 // Create input and output streams to client
                 ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketIn.getOutputStream());
                 ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
 
-                Object checkedObject = checkObject(inFromClient.readObject());
+                Object checkedObject = checkObject((SocketObjectWrapper) inFromClient.readObject());
 
                 outToClient.writeObject(checkedObject);
 
@@ -61,37 +71,48 @@ public class SocketServer
 
     }
 
-    public static Object checkObject(Object obj) throws SQLException
+    /**
+     *
+     *
+     *
+     * @param sow
+     * @return Object
+     * @throws SQLException
+     */
+    public Object checkObject(SocketObjectWrapper sow) throws SQLException
     {
-
-        ArrayList arrayFrmObj = (ArrayList) obj;
-
-        if (arrayFrmObj != null)
+        if (sow != null)
         {
-            int intFrmObj = (Integer) arrayFrmObj.get(0);
+            int method = sow.getMethodToCall();
 
-            if (intFrmObj == 1)
+            if (method == 1)
             {
                 //User validation
-                User userToValidate = (User) arrayFrmObj.get(1);
+                User userToValidate = (User) sow.getSocketObject();
                 return validateUser(userToValidate);
             }
-            if (intFrmObj == 2)
+            if (method == 2)
             {
                 // User registration
-                User userToRegister = (User) arrayFrmObj.get(1);
+                User userToRegister = (User) sow.getSocketObject();
                 return registerUser(userToRegister);
             }
-            if (intFrmObj == 3)
+            if (method == 3)
             {
-                int i = 3;
-                return i;
+                return method;
             }
         }
         return null;
     }
 
-    public static boolean registerUser(User user) throws SQLException
+    /**
+     *
+     * @param user to register, has to be of type User.
+     * @return a boolean depending on whether the method succeeded or not.
+     * @throws SQLException
+     *
+     */
+    public boolean registerUser(User user) throws SQLException
     {
         Connection conn = DriverManager.getConnection(myUrl, username, password);
 
@@ -106,7 +127,13 @@ public class SocketServer
         return rs.first();
     }
 
-    public static boolean validateUser(User user) throws SQLException
+    /**
+     *
+     * @param user to validate, has to be of type User.
+     * @return a boolean depending on whether the method succeeded or not.
+     * @throws SQLException
+     */
+    public boolean validateUser(User user) throws SQLException
     {
         Connection conn = DriverManager.getConnection(myUrl, username, password);
 

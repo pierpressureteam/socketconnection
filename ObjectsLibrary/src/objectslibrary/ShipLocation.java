@@ -1,56 +1,62 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package objectslibrary;
+
+import java.io.Serializable;
 
 /**
  *
  * @author Roy van den Heuvel
  */
-public class ShipLocation {
+public class ShipLocation extends SocketObject implements Serializable
+{
+
     private int MMSI;
     private double latitude;
     private double longitude;
     private long time;
-    
-    public ShipLocation(){
-        
+
+    public ShipLocation()
+    {
+
     }
 
-    public int getMMSI() {
+    public int getMMSI()
+    {
         return MMSI;
     }
 
-    public void setMMSI(int MMSI) {
+    public void setMMSI(int MMSI)
+    {
         this.MMSI = MMSI;
     }
 
-    public double getLatitude() {
+    public double getLatitude()
+    {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(double latitude)
+    {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public double getLongitude()
+    {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(double longitude)
+    {
         this.longitude = longitude;
     }
 
-    public long getTime() {
+    public long getTime()
+    {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(long time)
+    {
         this.time = time;
     }
-    
-    
-    
+
 }
