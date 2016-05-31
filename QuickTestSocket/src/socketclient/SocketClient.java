@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
+import objectslibrary.SocketObjectWrapper;
 import objectslibrary.User;
 
 /**
@@ -14,22 +14,22 @@ import objectslibrary.User;
 public class SocketClient {
 
     private static final String HOST = "145.24.222.149";
-    private static int PORT = 32000;
+    private final static int PORT = 32000;
 
     
     public static void main(String[] args) throws IOException, ClassNotFoundException {
+        User user = new User("username", "password", "email");
+        SocketObjectWrapper sow = new SocketObjectWrapper(user, 1);
+        
         SocketClient sc = new SocketClient();
-        ArrayList al = new ArrayList();
-        al.add("1");
-        User user = new User();
-        user.setPassword("admin");
-        user.setUsername("admin");
-        al.add(user);
-        int i = (Integer) SocketClient.communicateWithSocket(al, PORT);
+        
+        Object i = sc.communicateWithSocket(sow, PORT);
         System.out.println(i);
     }
+    
+    
 
-    public static Object communicateWithSocket(Object obj, int port) throws IOException, ClassNotFoundException {
+    public Object communicateWithSocket(Object obj, int port) throws IOException, ClassNotFoundException {
         Socket clientSocket = new Socket(HOST, PORT);
 
         ObjectOutputStream outToServer = new ObjectOutputStream(clientSocket.getOutputStream());

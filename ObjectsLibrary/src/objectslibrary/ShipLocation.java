@@ -9,14 +9,17 @@ import java.io.Serializable;
 public class ShipLocation extends SocketObject implements Serializable
 {
 
-    private int MMSI;
-    private double latitude;
-    private double longitude;
-    private long time;
+    final private int MMSI;
+    final private double latitude;
+    final private double longitude;
+    final private long time;
 
-    public ShipLocation()
+    public ShipLocation(int MMSI, double latitude, double longitude, long time)
     {
-
+        this.MMSI = MMSI;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.time = time;
     }
 
     public int getMMSI()
@@ -24,19 +27,9 @@ public class ShipLocation extends SocketObject implements Serializable
         return MMSI;
     }
 
-    public void setMMSI(int MMSI)
-    {
-        this.MMSI = MMSI;
-    }
-
     public double getLatitude()
     {
         return latitude;
-    }
-
-    public void setLatitude(double latitude)
-    {
-        this.latitude = latitude;
     }
 
     public double getLongitude()
@@ -44,19 +37,9 @@ public class ShipLocation extends SocketObject implements Serializable
         return longitude;
     }
 
-    public void setLongitude(double longitude)
-    {
-        this.longitude = longitude;
-    }
-
     public long getTime()
     {
         return time;
-    }
-
-    public void setTime(long time)
-    {
-        this.time = time;
     }
 
 }

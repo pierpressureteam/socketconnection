@@ -9,13 +9,15 @@ import java.io.Serializable;
 public class ShipCarbonFootprint extends SocketObject implements Serializable
 {
 
-    private double carbonFootprint;
-    private int MMSI;
-    private long time;
+    final private double carbonFootprint;
+    final private int MMSI;
+    final private long time;
 
-    public ShipCarbonFootprint()
+    public ShipCarbonFootprint(double carbonFootprint, int MMSI, long time)
     {
-
+        this.carbonFootprint = carbonFootprint;
+        this.MMSI = MMSI;
+        this.time = time;
     }
 
     public double getCarbonFootprint()
@@ -23,29 +25,13 @@ public class ShipCarbonFootprint extends SocketObject implements Serializable
         return carbonFootprint;
     }
 
-    public void setCarbonFootprint(double CarbonFootprint)
-    {
-        this.carbonFootprint = CarbonFootprint;
-    }
-
     public int getMMSI()
     {
         return MMSI;
-    }
-
-    public void setMMSI(int MMSI)
-    {
-        this.MMSI = MMSI;
     }
 
     public long getTime()
     {
         return time;
     }
-
-    public void setTime(long time)
-    {
-        this.time = time;
-    }
-
 }

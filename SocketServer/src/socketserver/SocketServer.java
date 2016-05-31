@@ -64,7 +64,7 @@ public class SocketServer
 
             } catch (IOException | ClassNotFoundException ex)
             {
-                System.out.println(ex.getMessage());
+                ex.printStackTrace();
             }
 
         }
