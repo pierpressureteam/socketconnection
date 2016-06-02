@@ -112,7 +112,7 @@ public class SocketServer
             System.out.println(ex.getMessage());
         }
 
-        System.out.println("Server recieved object: " + received.toString() + " from Client");
+        System.out.println("Server recieved object: " + received + " from Client");
 
         
         System.out.println("Server sending point: " + checkedObject + " to Client");

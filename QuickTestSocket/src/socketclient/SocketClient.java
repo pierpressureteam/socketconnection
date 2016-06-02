@@ -15,7 +15,7 @@ public class SocketClient
 {
 
     private static final String HOST = "145.24.222.149";
-    private final static int PORT = 32001;
+    private final static int PORT = 32002;
     private final static int PORT2 = 32002;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException
