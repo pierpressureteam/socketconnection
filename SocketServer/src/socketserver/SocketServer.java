@@ -24,7 +24,7 @@ public class SocketServer
 {
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final int PORT = 32000;
+    private static final int PORT = 32001;
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException
     {
@@ -56,8 +56,6 @@ public class SocketServer
         {
             try
             {
-                
-
                 // Create input and output streams to client
                 ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketIn.getOutputStream());
                 ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
