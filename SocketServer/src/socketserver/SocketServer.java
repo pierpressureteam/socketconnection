@@ -47,31 +47,6 @@ public class SocketServer
      */
     public void startDataServer(int port) throws IOException, SQLException
     {
-        // Create the Client Socket
-//        ServerSocket dataSocketIn = new ServerSocket(port);
-//        
-//        Socket clientSocketIn = dataSocketIn.accept();
-//        System.out.println("Data socket started.");
-//
-//        while (true)
-//        {
-//            try
-//            {
-//                // Create input and output streams to client
-//                ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketIn.getOutputStream());
-//                ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
-//
-//                Object checkedObject = checkObject((SocketObjectWrapper) inFromClient.readObject());
-//
-//                outToClient.writeObject(checkedObject);
-//
-//            } catch (IOException | ClassNotFoundException ex)
-//            {
-//                ex.printStackTrace();
-//            }
-//
-//        }
-
         ServerSocket serverSocket = null;
 
         try
@@ -124,6 +99,8 @@ public class SocketServer
         clientSocket.close();
         serverSocket.close();
 
+        startDataServer(port);
+        
     }
 
     /**
