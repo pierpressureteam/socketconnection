@@ -16,7 +16,6 @@ public class SocketClient
 
     private static final String HOST = "145.24.222.149";
     private final static int PORT = 32002;
-    private final static int PORT2 = 32002;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException
     {
@@ -31,31 +30,29 @@ public class SocketClient
 
     public Object communicateWithSocket(SocketObjectWrapper obj) throws IOException, ClassNotFoundException
     {
-        Socket clientSocketIn = new Socket(HOST, PORT);
-        Socket clientSocketOut = new Socket(HOST, PORT2);
+        Socket clientSocket = new Socket(HOST, PORT);
 
-        ObjectOutputStream outToServer = new ObjectOutputStream(clientSocketOut.getOutputStream());
-        ObjectInputStream inFromServer = new ObjectInputStream(clientSocketIn.getInputStream());
+        ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+        ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
 
-        outToServer.writeObject(obj);
+        out.writeObject(obj);
+        out.flush();
+        Object received = null;
 
-        if (inFromServer.readObject() != null)
+        try
         {
-            Object fromServer = (Object) inFromServer.readObject();
-            if (fromServer != null)
-            {
-                outToServer.flush();
-                outToServer.close();
-                inFromServer.close();
-                return fromServer;
-            }
-
-            outToServer.flush();
-            outToServer.close();
-            inFromServer.close();
-            return null;
+            received = in.readObject();
+        } catch (Exception ex)
+        {
+            System.out.println(ex.getMessage());
         }
 
-        return null;
+
+        out.close();
+        in.close();
+        clientSocket.close();
+        
+        return received;
+
     }
 }
