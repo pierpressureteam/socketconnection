@@ -22,7 +22,8 @@ import objectslibrary.SocketObjectWrapper;
  */
 public class SocketServer
 {
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver"; 
+
+    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     private static final int PORT = 32000;
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException
@@ -46,14 +47,16 @@ public class SocketServer
      */
     public void startDataServer(int port) throws IOException, SQLException
     {
+        // Create the Client Socket
+        ServerSocket dataSocketIn = new ServerSocket(port);
+        Socket clientSocketIn = dataSocketIn.accept();
         System.out.println("Data socket started.");
+
         while (true)
         {
             try
             {
-                // Create the Client Socket
-                ServerSocket dataSocketIn = new ServerSocket(port);
-                Socket clientSocketIn = dataSocketIn.accept();
+                
 
                 // Create input and output streams to client
                 ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketIn.getOutputStream());
