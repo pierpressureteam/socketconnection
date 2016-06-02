@@ -10,6 +10,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import objectslibrary.Ship;
 import static socketserver.DatabaseConnection.myUrl;
 import static socketserver.DatabaseConnection.password;
 import static socketserver.DatabaseConnection.username;
@@ -24,7 +26,7 @@ public class SocketServer
 {
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final int PORT = 32005;
+    private static final int PORT = 32006;
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException
     {
@@ -75,12 +77,11 @@ public class SocketServer
         ObjectInputStream in = new ObjectInputStream(
                 clientSocket.getInputStream());
 
-
         Object checkedObject = null;
         SocketObjectWrapper received = null;
         try
         {
-            received =  (SocketObjectWrapper) in.readObject();
+            received = (SocketObjectWrapper) in.readObject();
             checkedObject = checkObject(received);
         } catch (Exception ex)
         {
@@ -89,7 +90,6 @@ public class SocketServer
 
         System.out.println("Server recieved object: " + received + " from Client");
 
-        
         System.out.println("Server sending point: " + checkedObject + " to Client");
         out.writeObject(checkedObject);
         out.flush();
@@ -100,12 +100,10 @@ public class SocketServer
         serverSocket.close();
 
         startDataServer(port);
-        
+
     }
 
     /**
-     *
-     *
      *
      * @param sow
      * @return Object
@@ -131,10 +129,39 @@ public class SocketServer
             }
             if (method == 3)
             {
-                return method;
+                Ship ship = (Ship) sow.getSocketObject();
+                return getShipData(ship.getMMSI());
             }
         }
         return null;
+    }
+
+    public Object getShipData(int MMSI) throws SQLException
+    {
+
+        Connection conn = DriverManager.getConnection(myUrl, username, password);
+
+        PreparedStatement ps = conn.prepareStatement("select ships_mmsi,current_time_ais,x_coordinates,y_coordinates,co2_submission from aisinformation WHERE ships_mmsi = ?;");
+
+        ps.setInt(1, MMSI);
+        ArrayList<Ship> shipList = new ArrayList();
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next())
+        {
+            int mmsi = rs.getInt(1);
+            long time = rs.getLong(2);
+            double x = rs.getDouble(3);
+            double y = rs.getDouble(4);
+            double emission = rs.getDouble(5);
+            Ship ship = new Ship(mmsi, x, y, time, emission);
+            
+            shipList.add(ship);
+        }
+
+        
+        return shipList;
+        
     }
 
     /**
@@ -156,12 +183,13 @@ public class SocketServer
 
         // If the query is executed it will return false or true depending on if it is an insert query or not.
         // This means that to ensure we return true when the method succeeds we have to check whether it is either false or true.
-        if(ps.execute() == false || true){
+        if (ps.execute() == false || true)
+        {
             return true;
         }
         // if this return is reached, this means the query did not get executed properly. The method will have returned null.
         return false;
-        
+
     }
 
     /**
@@ -179,9 +207,8 @@ public class SocketServer
         ps.setString(1, user.getUsername());
         ps.setString(2, user.getPassword());
 
-        
         ResultSet rs = ps.executeQuery();
-        
+
         return rs.first();
     }
 }
