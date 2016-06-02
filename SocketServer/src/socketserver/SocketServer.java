@@ -24,7 +24,7 @@ public class SocketServer
 {
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final int PORT = 32002;
+    private static final int PORT = 32003;
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException
     {
