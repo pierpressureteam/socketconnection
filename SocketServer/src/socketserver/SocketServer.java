@@ -22,11 +22,12 @@ import objectslibrary.SocketObjectWrapper;
  */
 public class SocketServer
 {
-
+    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver"; 
     private static final int PORT = 32000;
 
-    public static void main(String[] args) throws IOException, SQLException
+    public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException
     {
+        Class.forName(JDBC_DRIVER);
         System.out.println("PORT IN USE: " + PORT);
         SocketServer ss = new SocketServer();
         ss.startDataServer(PORT);
