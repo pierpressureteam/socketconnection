@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import objectslibrary.Ship;
 import objectslibrary.SocketObjectWrapper;
 import objectslibrary.User;
 
@@ -15,16 +17,22 @@ public class SocketClient
 {
 
     private static final String HOST = "145.24.222.149";
-    private final static int PORT = 32006;
+    private final static int PORT = 32007;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException
     {
         User user = new User("username11121", "pass1word", "email");
-        SocketObjectWrapper sow = new SocketObjectWrapper(user, 1);
+        Ship ship = new Ship(244660136);
+        SocketObjectWrapper sow = new SocketObjectWrapper(ship, 3);
 
         SocketClient sc = new SocketClient();
 
         Object i = sc.communicateWithSocket(sow);
+        ArrayList<Ship> shiplist = (ArrayList<Ship>) i;
+        for(Ship ship1 : shiplist){
+            System.out.println(ship1.carbonFootprint());
+            System.out.println(ship1.getMMSI() + "\n \n");
+        }
         System.out.println(i);
     }
 

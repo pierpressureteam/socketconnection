@@ -16,6 +16,15 @@ public class Ship extends SocketObject implements Serializable
     private double longitude;
     private long epochTime;
     private Date dateTime;
+    private double speed;
+
+    public Ship(int MMSI, long epochTime, double speed)
+    {
+        this.MMSI = MMSI;
+        this.epochTime = epochTime;
+        this.speed = speed;
+        this.dateTime = convertEpochToDate(epochTime);
+    }
 
     public Ship(int MMSI)
     {
@@ -31,6 +40,10 @@ public class Ship extends SocketObject implements Serializable
         this.epochTime = time;
         this.dateTime = convertEpochToDate(time);
     }
+    
+    public double getSpeed(){
+        return speed;
+    }
 
     private Date convertEpochToDate(double epoch)
     {
@@ -41,8 +54,9 @@ public class Ship extends SocketObject implements Serializable
     {
         return MMSI;
     }
-    
-    public Date getDateTime(){
+
+    public Date getDateTime()
+    {
         return dateTime;
     }
 

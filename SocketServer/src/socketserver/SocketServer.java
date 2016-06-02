@@ -26,7 +26,7 @@ public class SocketServer
 {
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final int PORT = 32006;
+    private static final int PORT = 32007;
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException
     {
@@ -129,14 +129,46 @@ public class SocketServer
             }
             if (method == 3)
             {
+                // Get data of a ship based on MMSI
                 Ship ship = (Ship) sow.getSocketObject();
-                return getShipData(ship.getMMSI());
+                return getShipEmissionLocationData(ship.getMMSI());
+            }
+            if (method == 4)
+            {
+                // Get speed of a ship based on MMSI
+                Ship ship = (Ship) sow.getSocketObject();
+                return getSpeedData(ship.getMMSI());
             }
         }
         return null;
     }
 
-    public Object getShipData(int MMSI) throws SQLException
+    public ArrayList<Ship> getSpeedData(int MMSI) throws SQLException
+    {
+        Connection conn = DriverManager.getConnection(myUrl, username, password);
+
+        PreparedStatement ps = conn.prepareStatement("SELECT ships_mmsi,speed,current_time_ais from aisinformation WHERE ships_mmsi = ?;");
+
+        ps.setInt(1, MMSI);
+
+        ResultSet rs = ps.executeQuery();
+        ArrayList<Ship> shipList = new ArrayList();
+
+        while (rs.next())
+        {
+            int mmsi = rs.getInt(1);
+            double speed = rs.getDouble(2);
+            long time = rs.getLong(3);
+
+            Ship ship = new Ship(mmsi, time, speed);
+
+            shipList.add(ship);
+        }
+
+        return shipList;
+    }
+
+    public ArrayList<Ship> getShipEmissionLocationData(int MMSI) throws SQLException
     {
 
         Connection conn = DriverManager.getConnection(myUrl, username, password);
@@ -155,13 +187,12 @@ public class SocketServer
             double y = rs.getDouble(4);
             double emission = rs.getDouble(5);
             Ship ship = new Ship(mmsi, x, y, time, emission);
-            
+
             shipList.add(ship);
         }
 
-        
         return shipList;
-        
+
     }
 
     /**
