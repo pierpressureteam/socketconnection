@@ -48,28 +48,81 @@ public class SocketServer
     public void startDataServer(int port) throws IOException, SQLException
     {
         // Create the Client Socket
-        ServerSocket dataSocketIn = new ServerSocket(port);
-        Socket clientSocketIn = dataSocketIn.accept();
-        System.out.println("Data socket started.");
+//        ServerSocket dataSocketIn = new ServerSocket(port);
+//        
+//        Socket clientSocketIn = dataSocketIn.accept();
+//        System.out.println("Data socket started.");
+//
+//        while (true)
+//        {
+//            try
+//            {
+//                // Create input and output streams to client
+//                ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketIn.getOutputStream());
+//                ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
+//
+//                Object checkedObject = checkObject((SocketObjectWrapper) inFromClient.readObject());
+//
+//                outToClient.writeObject(checkedObject);
+//
+//            } catch (IOException | ClassNotFoundException ex)
+//            {
+//                ex.printStackTrace();
+//            }
+//
+//        }
 
-        while (true)
+        ServerSocket serverSocket = null;
+
+        try
         {
-            try
-            {
-                // Create input and output streams to client
-                ObjectOutputStream outToClient = new ObjectOutputStream(clientSocketIn.getOutputStream());
-                ObjectInputStream inFromClient = new ObjectInputStream(clientSocketIn.getInputStream());
-
-                Object checkedObject = checkObject((SocketObjectWrapper) inFromClient.readObject());
-
-                outToClient.writeObject(checkedObject);
-
-            } catch (IOException | ClassNotFoundException ex)
-            {
-                ex.printStackTrace();
-            }
-
+            serverSocket = new ServerSocket(port);
+        } catch (IOException e)
+        {
+            System.err.println("Could not listen on port: " + port);
+            System.exit(1);
         }
+
+        Socket clientSocket = null;
+
+        try
+        {
+            System.out.println("Waiting for Client");
+            clientSocket = serverSocket.accept();
+        } catch (IOException e)
+        {
+            System.err.println("Accept failed.");
+            System.exit(1);
+        }
+
+        ObjectOutputStream out = new ObjectOutputStream(
+                clientSocket.getOutputStream());
+        ObjectInputStream in = new ObjectInputStream(
+                clientSocket.getInputStream());
+
+
+        Object checkedObject = null;
+        SocketObjectWrapper received = null;
+        try
+        {
+            received =  (SocketObjectWrapper) in.readObject();
+            checkedObject = checkObject(received);
+        } catch (Exception ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+
+        System.out.println("Server recieved object: " + received.toString() + " from Client");
+
+        
+        System.out.println("Server sending point: " + checkedObject + " to Client");
+        out.writeObject(checkedObject);
+        out.flush();
+
+        out.close();
+        in.close();
+        clientSocket.close();
+        serverSocket.close();
 
     }
 
