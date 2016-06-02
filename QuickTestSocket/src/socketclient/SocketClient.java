@@ -15,11 +15,11 @@ public class SocketClient
 {
 
     private static final String HOST = "145.24.222.149";
-    private final static int PORT = 32004;
+    private final static int PORT = 32005;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException
     {
-        User user = new User("username", "password", "email");
+        User user = new User("username111", "password", "email");
         SocketObjectWrapper sow = new SocketObjectWrapper(user, 2);
 
         SocketClient sc = new SocketClient();
@@ -28,14 +28,14 @@ public class SocketClient
         System.out.println(i);
     }
 
-    public Object communicateWithSocket(SocketObjectWrapper obj) throws IOException, ClassNotFoundException
+    public Object communicateWithSocket(SocketObjectWrapper sow) throws IOException, ClassNotFoundException
     {
         Socket clientSocket = new Socket(HOST, PORT);
 
         ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
         ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
 
-        out.writeObject(obj);
+        out.writeObject(sow);
         out.flush();
         Object received = null;
 

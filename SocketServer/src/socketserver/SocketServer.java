@@ -24,7 +24,7 @@ public class SocketServer
 {
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final int PORT = 32004;
+    private static final int PORT = 32005;
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException
     {
@@ -154,8 +154,14 @@ public class SocketServer
         ps.setString(2, user.getPassword());
         ps.setString(3, user.getEmail());
 
+        // If the query is executed it will return false or true depending on if it is an insert query or not.
+        // This means that to ensure we return true when the method succeeds we have to check whether it is either false or true.
+        if(ps.execute() == false || true){
+            return true;
+        }
+        // if this return is reached, this means the query did not get executed properly. The method will have returned null.
+        return false;
         
-        return ps.execute();
     }
 
     /**
