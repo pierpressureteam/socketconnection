@@ -15,12 +15,12 @@ public class SocketClient
 {
 
     private static final String HOST = "145.24.222.149";
-    private final static int PORT = 32003;
+    private final static int PORT = 32004;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException
     {
         User user = new User("username", "password", "email");
-        SocketObjectWrapper sow = new SocketObjectWrapper(user, 1);
+        SocketObjectWrapper sow = new SocketObjectWrapper(user, 2);
 
         SocketClient sc = new SocketClient();
 

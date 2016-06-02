@@ -24,7 +24,7 @@ public class SocketServer
 {
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final int PORT = 32003;
+    private static final int PORT = 32004;
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException
     {
@@ -154,9 +154,8 @@ public class SocketServer
         ps.setString(2, user.getPassword());
         ps.setString(3, user.getEmail());
 
-        ResultSet rs = ps.executeQuery();
-
-        return rs.first();
+        
+        return ps.execute();
     }
 
     /**
@@ -174,9 +173,9 @@ public class SocketServer
         ps.setString(1, user.getUsername());
         ps.setString(2, user.getPassword());
 
-        ps.execute();
-        ResultSet rs = ps.getResultSet();
-
+        
+        ResultSet rs = ps.executeQuery();
+        
         return rs.first();
     }
 }
