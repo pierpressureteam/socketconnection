@@ -296,6 +296,8 @@ public class SocketServer
 
         ResultSet rs = ps.executeQuery();
         int shipMMSI = rs.getInt(1);
+        System.out.println(shipMMSI);
+        
         if(shipMMSI == 0){
             System.out.println("This user has no ship assigned to it or doesn't exist.");
             return 0;
