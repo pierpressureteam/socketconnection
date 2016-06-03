@@ -140,7 +140,7 @@ public class SocketServer
                 Ship ship = (Ship) sow.getSocketObject();
                 return getSpeedData(ship.getMMSI());
             }
-            if(method == 5)
+            if (method == 5)
             {
                 // Get all the available ship types from the database.
                 return getShipTypesAvailable();
@@ -148,29 +148,30 @@ public class SocketServer
         }
         return null;
     }
-    
-    public ArrayList<String[]> getShipTypesAvailable() throws SQLException{
-        
+
+    public ArrayList<String[]> getShipTypesAvailable() throws SQLException
+    {
+
         Connection conn = DriverManager.getConnection(myUrl, username, password);
-        
+
         ArrayList<String[]> list = new ArrayList();
-        
+
         PreparedStatement ps = conn.prepareStatement("SELECT typename, typebigname FROM shiptype;");
-        
+
         ResultSet rs = ps.executeQuery();
-        
+
         while (rs.next())
         {
             String typeName = rs.getString(1);
             String typeBigName = rs.getString(2);
 
-            String[] typeNames = new String[2]; 
+            String[] typeNames = new String[2];
             typeNames[0] = typeName;
             typeNames[1] = typeBigName;
-            
+
             list.add(typeNames);
         }
-        
+
         return list;
     }
 
@@ -239,37 +240,40 @@ public class SocketServer
         boolean oneSuccess = false;
         boolean twoSuccess = false;
         boolean threeSuccess = false;
-        
-        
-        PreparedStatement ps = conn.prepareStatement("INSERT INTO usersaccount(username, password, email) VALUES(?, ?, ?)");
-        PreparedStatement ps2 = conn.prepareStatement("INSERT INTO ships(mmsi, shiptype_typename) VALUES(?, ?)");
-        PreparedStatement ps3 = conn.prepareStatement("INSERT INTO usersaccount_has_ships(usersaccount_username, ships_mmsi) VALUES(?, ?)");
-        
+
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO usersaccount(username, password, email) VALUES(?, ?, ?);");
+        PreparedStatement ps2 = conn.prepareStatement("INSERT INTO ships(mmsi, shiptype_typename) VALUES(?, ?);");
+        PreparedStatement ps3 = conn.prepareStatement("INSERT INTO usersaccount_has_ships(usersaccount_username, ships_mmsi) VALUES(?, ?);");
+
         ps.setString(1, user.getUsername());
         ps.setString(2, user.getPassword());
         ps.setString(3, user.getEmail());
-        
+
         ps2.setInt(1, user.getMMSI());
         ps2.setString(2, user.getShipType());
-        
+
         ps3.setString(1, user.getUsername());
         ps3.setInt(2, user.getMMSI());
-        
+
         Savepoint sp = conn.setSavepoint();
-        
-        if(ps.execute() == false || true){
+
+        if (ps.execute() == false || true)
+        {
             oneSuccess = true;
         }
-        if(ps2.execute() == false || true){
+        if (ps2.execute() == false || true)
+        {
             twoSuccess = true;
         }
-        if(ps3.execute() == false || true){
+        if (ps3.execute() == false || true)
+        {
             threeSuccess = true;
         }
 
         // If the query is executed it will return false or true depending on if it is an insert query or not.
         // This means that to ensure we return true when the method succeeds we have to check whether it is either false or true.
-        if (oneSuccess && twoSuccess && threeSuccess){
+        if (oneSuccess && twoSuccess && threeSuccess)
+        {
             return true;
         }
         // if this return is reached, this means the query did not get executed properly. The method will have returned null.
@@ -288,7 +292,7 @@ public class SocketServer
     {
         Connection conn = DriverManager.getConnection(myUrl, username, password);
 
-        PreparedStatement ps = conn.prepareStatement("SELECT uhs.ships_mmsi FROM usersaccount u, usersaccount_has_ships uhs WHERE u.username = ? AND u.password = ? AND uhs.usersaccount_username = ?");
+        PreparedStatement ps = conn.prepareStatement("SELECT uhs.ships_mmsi FROM usersaccount u, usersaccount_has_ships uhs WHERE u.username = ? AND u.password = ? AND uhs.usersaccount_username = ? LIMIT 1;");
 
         ps.setString(1, user.getUsername());
         ps.setString(2, user.getPassword());
@@ -300,8 +304,9 @@ public class SocketServer
         System.out.println(ps.toString() + " -- The prepared statement.");
         System.out.println(user.getUsername());
         System.out.println(user.getPassword());
-        
-        if(shipMMSI == 0){
+
+        if (shipMMSI == 0)
+        {
             System.out.println("This user has no ship assigned to it or doesn't exist.");
             return 0;
         }
