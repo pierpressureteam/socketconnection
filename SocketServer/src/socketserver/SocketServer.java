@@ -146,7 +146,7 @@ public class SocketServer
                 return getShipTypesAvailable();
             }
         }
-        return null;
+        return "Invalid method call.";
     }
 
     public ArrayList<String[]> getShipTypesAvailable() throws SQLException
@@ -297,19 +297,19 @@ public class SocketServer
         ps.setString(1, user.getUsername());
         ps.setString(2, user.getPassword());
         ps.setString(3, user.getUsername());
+        
+        int shipMMSI = 0;
 
         ResultSet rs = ps.executeQuery();
-        int shipMMSI = rs.getInt(1);
+        while(rs.next()){
+            shipMMSI = rs.getInt(1);
+        }
+        
+        
         System.out.println(shipMMSI + " -- MMSI to sent to user.");
         System.out.println(ps.toString() + " -- The prepared statement.");
         System.out.println(user.getUsername());
         System.out.println(user.getPassword());
-
-        if (shipMMSI == 0)
-        {
-            System.out.println("This user has no ship assigned to it or doesn't exist.");
-            return 0;
-        }
 
         return shipMMSI;
     }
