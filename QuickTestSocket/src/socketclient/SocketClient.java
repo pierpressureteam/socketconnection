@@ -14,7 +14,12 @@ public class SocketClient
 {
 
     private final static String HOST = "145.24.222.149";
-    private final static int PORT = 32007;
+    private final static int PORT = 31000;
+    
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        SocketClient sc = new SocketClient();
+        System.out.println(sc.communicateWithSocket(new SocketObjectWrapper(null, 5)));       
+    }
 
     public Object communicateWithSocket(SocketObjectWrapper sow) throws IOException, ClassNotFoundException
     {
