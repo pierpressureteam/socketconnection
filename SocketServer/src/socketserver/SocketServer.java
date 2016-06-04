@@ -26,7 +26,7 @@ import objectslibrary.SocketObjectWrapper;
 public class SocketServer {
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final int PORT = 31000;
+    private static final int PORT = 32007;
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException {
         Class.forName(JDBC_DRIVER);
