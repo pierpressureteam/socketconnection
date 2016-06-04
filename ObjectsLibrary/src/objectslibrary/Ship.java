@@ -31,7 +31,7 @@ public class Ship extends SocketObject implements Serializable
         this.MMSI = MMSI;
     }
 
-    public Ship(int MMSI, double latitude, double longitude, long time, double carbonFootprint)
+    public Ship(int MMSI, double latitude, double longitude, long time, double carbonFootprint, double speed)
     {
         this.carbonFootprint = carbonFootprint;
         this.MMSI = MMSI;
@@ -39,6 +39,7 @@ public class Ship extends SocketObject implements Serializable
         this.longitude = longitude;
         this.epochTime = time;
         this.dateTime = convertEpochToDate(time);
+        this.speed = speed;
     }
     
     public double getSpeed(){
