@@ -119,12 +119,12 @@ public class SocketServer {
                 Ship ship = (Ship) sow.getSocketObject();
                 return getShipEmissionLocationData(ship.getMMSI());
             }
-//            if (method == 4)
-//            {
-//                // Get speed of a ship based on MMSI
-//                Ship ship = (Ship) sow.getSocketObject();
-//                return getSpeedData(ship.getMMSI());
-//            }
+            if (method == 4)
+            {
+                // Get speed of a ship based on MMSI sorted by speed, lower speeds first.
+                Ship ship = (Ship) sow.getSocketObject();
+                return getSortedSpeedData(ship.getMMSI());
+            }
             if (method == 5) {
                 // Get all the available ship types from the database.
                 return getShipTypesAvailable();
@@ -157,30 +157,29 @@ public class SocketServer {
         return list;
     }
 
-//    public ArrayList<Ship> getSpeedData(int MMSI) throws SQLException
-//    {
-//        Connection conn = DriverManager.getConnection(myUrl, username, password);
-//
-//        PreparedStatement ps = conn.prepareStatement("SELECT ships_mmsi,speed,current_time_ais from aisinformation WHERE ships_mmsi = ?;");
-//
-//        ps.setInt(1, MMSI);
-//
-//        ResultSet rs = ps.executeQuery();
-//        ArrayList<Ship> shipList = new ArrayList();
-//
-//        while (rs.next())
-//        {
-//            int mmsi = rs.getInt(1);
-//            double speed = rs.getDouble(2);
-//            long time = rs.getLong(3);
-//
-//            Ship ship = new Ship(mmsi, time, speed);
-//
-//            shipList.add(ship);
-//        }
-//
-//        return shipList;
-//    }
+    public ArrayList<Ship> getSortedSpeedData(int MMSI) throws SQLException {
+        Connection conn = DriverManager.getConnection(myUrl, username, password);
+
+        PreparedStatement ps = conn.prepareStatement("SELECT ships_mmsi,speed,current_time_ais FROM aisinformation WHERE ships_mmsi = ? ORDER BY speed;");
+
+        ps.setInt(1, MMSI);
+
+        ResultSet rs = ps.executeQuery();
+        ArrayList<Ship> shipList = new ArrayList();
+
+        while (rs.next()) {
+            int mmsi = rs.getInt(1);
+            double speed = rs.getDouble(2);
+            long time = rs.getLong(3);
+
+            Ship ship = new Ship(mmsi, time, speed);
+
+            shipList.add(ship);
+        }
+
+        return shipList;
+    }
+
     public ArrayList<Ship> getShipEmissionLocationData(int MMSI) throws SQLException {
 
         Connection conn = DriverManager.getConnection(myUrl, username, password);
