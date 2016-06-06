@@ -27,7 +27,7 @@ public class SocketServer
 {
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final int PORT = 32007;
+    private static final int PORT = 32008;
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException
     {
@@ -179,7 +179,7 @@ public class SocketServer
     {
         Connection conn = DriverManager.getConnection(myUrl, username, password);
 
-        PreparedStatement ps = conn.prepareStatement("SELECT ships_mmsi,speed,current_time_ais from aisinformation WHERE ships_mmsi = ?;");
+        PreparedStatement ps = conn.prepareStatement("SELECT ships_mmsi,speed,current_time_ais,co2_submission from aisinformation WHERE ships_mmsi = ?;");
 
         ps.setInt(1, MMSI);
 
@@ -191,8 +191,9 @@ public class SocketServer
             int mmsi = rs.getInt(1);
             double speed = rs.getDouble(2);
             long time = rs.getLong(3);
+            double co2 = rs.getDouble(4);
 
-            Ship ship = new Ship(mmsi, time, speed);
+            Ship ship = new Ship(mmsi, time, speed, co2);
 
             shipList.add(ship);
         }

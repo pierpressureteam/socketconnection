@@ -14,7 +14,7 @@ public class SocketClient
 {
 
     private final static String HOST = "145.24.222.149";
-    private final static int PORT = 32007;
+    private final static int PORT = 32008;
 
     public Object communicateWithSocket(SocketObjectWrapper sow) throws IOException, ClassNotFoundException
     {

@@ -18,11 +18,12 @@ public class Ship extends SocketObject implements Serializable
     private Date dateTime;
     private double speed;
 
-    public Ship(int MMSI, long epochTime, double speed)
+    public Ship(int MMSI, long epochTime, double speed, double co2)
     {
+        this.carbonFootprint = co2;
         this.MMSI = MMSI;
         this.epochTime = epochTime;
-        this.speed = speed;
+        this.speed = speed * 3.6;
         this.dateTime = convertEpochToDate(epochTime);
     }
 
