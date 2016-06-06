@@ -10,10 +10,10 @@ public class User extends SocketObject implements Serializable
 {
 
     final private String username;
-    private String password;
-    private String email;
-    private int MMSI;
-    private String shipType;
+    private String password = "";
+    private String email = "";
+    private int MMSI = 0;
+    private String shipType = "";
 
     public User(String uname, String pword)
     {
@@ -34,8 +34,23 @@ public class User extends SocketObject implements Serializable
         this.MMSI = MMSI;
         this.shipType = shipType;
     }
-    
-    public String getShipType(){
+
+    @Override
+    public String toString()
+    {
+        String user = "";
+
+        user += "Username: " + username;
+        user += " Password: " + password;
+        user += " Email: " + email;
+        user += " MMSI: " + MMSI;
+        user += " Ship type: " + shipType;
+
+        return user;
+    }
+
+    public String getShipType()
+    {
         return shipType;
     }
 
@@ -53,8 +68,9 @@ public class User extends SocketObject implements Serializable
     {
         return password;
     }
-    
-    public int getMMSI(){
+
+    public int getMMSI()
+    {
         return MMSI;
     }
 
