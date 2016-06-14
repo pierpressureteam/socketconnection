@@ -16,6 +16,7 @@ import java.sql.Savepoint;
 
 import java.util.ArrayList;
 import java.util.Date;
+import objectslibrary.GeneralShipData;
 
 import objectslibrary.Ship;
 import objectslibrary.User;
@@ -170,11 +171,51 @@ public class SocketServer
                 Ship ship = (Ship) sow.getSocketObject();
                 return getLastShipData(ship.getMMSI());
             }
+            if (method == 7)
+            {
+                // Get average of ship category.
+                Ship ship = (Ship) sow.getSocketObject();
+                return getCategoryAverage(ship);
+            }
             System.err.print("Invalid method was called by client.");
             return "Invalid method call.";
         }
         System.err.print("SocketObjectWrapper received by client was null.");
         return "SocketObjectWrapper received was null";
+    }
+
+    public GeneralShipData getCategoryAverage(Ship ship) throws SQLException
+    {
+        double average = 0;
+        double lowest = 0;
+        double highest = 0;
+        
+        Connection conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
+        PreparedStatement ps = conn.prepareCall("SELECT AVG(co2_submission) FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ?;");
+        PreparedStatement lowestPs = conn.prepareCall("SELECT co2_submission FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ? ORDER BY co2_submission ASC LIMIT 1;");
+        PreparedStatement highestPs = conn.prepareCall("SELECT co2_submission FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ? ORDER BY co2_submission DESC LIMIT 1;");
+        
+        GeneralShipData gsd = new GeneralShipData();
+        
+        ResultSet rs = ps.executeQuery();
+        ResultSet rs2 = lowestPs.executeQuery();
+        ResultSet rs3 = highestPs.executeQuery();
+        
+        while(rs.next()){
+            average = rs.getDouble(1);
+        }
+        while(rs2.next()){
+            lowest = rs.getDouble(1);
+        }
+        while(rs3.next()){
+            highest = rs.getDouble(1);
+        }
+        
+        gsd.setAverage(average);
+        gsd.setHighest(highest);
+        gsd.setLowest(lowest);
+        
+        return gsd;
     }
 
     public Ship getLastShipData(int MMSI) throws SQLException
@@ -264,7 +305,6 @@ public class SocketServer
         return shipList;
     }
 
-    
     public ArrayList<Ship> getShipEmissionLocationData(int MMSI) throws SQLException
     {
 
