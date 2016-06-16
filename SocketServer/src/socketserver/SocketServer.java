@@ -318,7 +318,8 @@ public class SocketServer
 
         ResultSet rs = ps.executeQuery();
         ArrayList<Ship> shipList = new ArrayList();
-
+        
+        Double checkNewSpeed = 0.0;
         while (rs.next())
         {
             double speed = rs.getDouble(1);
@@ -330,7 +331,10 @@ public class SocketServer
             ship.setEpochTime(time);
             ship.setCarbonFootprint(co2);
 
-            shipList.add(ship);
+            if(ship.getSpeed() < checkNewSpeed){
+                checkNewSpeed = checkNewSpeed + 0.5;
+                shipList.add(ship);
+            }
         }
 
         return shipList;
