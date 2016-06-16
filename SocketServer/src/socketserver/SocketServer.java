@@ -215,11 +215,11 @@ public class SocketServer
         }
         while (rs2.next())
         {
-            lowest = rs.getDouble(1);
+            lowest = rs2.getDouble(1);
         }
         while (rs3.next())
         {
-            highest = rs.getDouble(1);
+            highest = rs3.getDouble(1);
         }
 
         gsd.setAverage(average);
