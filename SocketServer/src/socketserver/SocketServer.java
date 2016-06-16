@@ -222,6 +222,10 @@ public class SocketServer
             highest = rs3.getDouble(1);
         }
 
+        System.out.println(average);
+        System.out.println(highest);
+        System.out.println(lowest);
+        
         gsd.setAverage(average);
         gsd.setHighest(highest);
         gsd.setLowest(lowest);
