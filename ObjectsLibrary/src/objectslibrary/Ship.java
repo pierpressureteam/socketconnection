@@ -128,7 +128,7 @@ public class Ship extends SocketObject implements Serializable
 
     public void setSpeed(double speed)
     {
-        this.speed = speed;
+        this.speed = speed * 3.6;
     }
 
 }
