@@ -199,6 +199,10 @@ public class SocketServer
         PreparedStatement lowestPs = conn.prepareCall("SELECT co2_submission FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ? ORDER BY co2_submission ASC LIMIT 1;");
         PreparedStatement highestPs = conn.prepareCall("SELECT co2_submission FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ? ORDER BY co2_submission DESC LIMIT 1;");
 
+        ps.setInt(1, ship.getMMSI());
+        ps.setInt(2, ship.getMMSI());
+        ps.setInt(3, ship.getMMSI());
+        
         GeneralShipData gsd = new GeneralShipData();
 
         ResultSet rs = ps.executeQuery();
