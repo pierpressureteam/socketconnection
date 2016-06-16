@@ -189,32 +189,35 @@ public class SocketServer
         double average = 0;
         double lowest = 0;
         double highest = 0;
-        
+
         Connection conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
         PreparedStatement ps = conn.prepareCall("SELECT AVG(co2_submission) FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ?;");
         PreparedStatement lowestPs = conn.prepareCall("SELECT co2_submission FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ? ORDER BY co2_submission ASC LIMIT 1;");
         PreparedStatement highestPs = conn.prepareCall("SELECT co2_submission FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ? ORDER BY co2_submission DESC LIMIT 1;");
-        
+
         GeneralShipData gsd = new GeneralShipData();
-        
+
         ResultSet rs = ps.executeQuery();
         ResultSet rs2 = lowestPs.executeQuery();
         ResultSet rs3 = highestPs.executeQuery();
-        
-        while(rs.next()){
+
+        while (rs.next())
+        {
             average = rs.getDouble(1);
         }
-        while(rs2.next()){
+        while (rs2.next())
+        {
             lowest = rs.getDouble(1);
         }
-        while(rs3.next()){
+        while (rs3.next())
+        {
             highest = rs.getDouble(1);
         }
-        
+
         gsd.setAverage(average);
         gsd.setHighest(highest);
         gsd.setLowest(lowest);
-        
+
         return gsd;
     }
 
@@ -283,7 +286,7 @@ public class SocketServer
     {
         Connection conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
 
-        PreparedStatement ps = conn.prepareStatement("SELECT ships_mmsi,speed,current_time_ais,co2_submission FROM aisinformation WHERE ships_mmsi = ? ORDER BY speed;");
+        PreparedStatement ps = conn.prepareStatement("SELECT DISTINCT speed, current_time_ais, co2_submission FROM aisinformation WHERE ships_mmsi = ? ORDER BY speed;");
 
         ps.setInt(1, MMSI);
 
@@ -292,12 +295,15 @@ public class SocketServer
 
         while (rs.next())
         {
-            int mmsi = rs.getInt(1);
-            double speed = rs.getDouble(2);
-            long time = rs.getLong(3);
-            double co2 = rs.getDouble(4);
+            double speed = rs.getDouble(1);
+            long time = rs.getLong(2);
+            double co2 = rs.getDouble(3);
 
-            Ship ship = new Ship(mmsi, time, speed, co2);
+            Ship ship = new Ship();
+            ship.setSpeed(speed);
+            ship.setEpochTime(time);
+            ship.setCarbonFootprint(co2);
+            
 
             shipList.add(ship);
         }

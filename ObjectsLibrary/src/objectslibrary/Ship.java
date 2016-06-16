@@ -10,7 +10,7 @@ import java.util.Date;
 public class Ship extends SocketObject implements Serializable
 {
 
-    final private int MMSI;
+    private int MMSI;
     private double carbonFootprint = 0;
     private double latitude = 0;
     private double longitude = 0;
@@ -18,6 +18,10 @@ public class Ship extends SocketObject implements Serializable
     private Date dateTime = new Date();
     private double speed = 0;
 
+    public Ship(){
+        
+    }
+    
     public Ship(int MMSI, long epochTime, double speed, double co2)
     {
         this.carbonFootprint = co2;
@@ -113,6 +117,7 @@ public class Ship extends SocketObject implements Serializable
 
     public void setEpochTime(long epochTime)
     {
+        this.dateTime = convertEpochToDate(epochTime);
         this.epochTime = epochTime;
     }
 

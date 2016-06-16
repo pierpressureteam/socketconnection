@@ -5,11 +5,13 @@
  */
 package objectslibrary;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Roy van den Heuvel
  */
-public class GeneralShipData extends SocketObject
+public class GeneralShipData extends SocketObject implements Serializable
 {
 
     private double lowest;
