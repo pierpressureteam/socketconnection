@@ -200,8 +200,8 @@ public class SocketServer
         PreparedStatement highestPs = conn.prepareCall("SELECT co2_submission FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ? ORDER BY co2_submission DESC LIMIT 1;");
 
         ps.setInt(1, ship.getMMSI());
-        ps.setInt(2, ship.getMMSI());
-        ps.setInt(3, ship.getMMSI());
+        lowestPs.setInt(1, ship.getMMSI());
+        highestPs.setInt(1, ship.getMMSI());
         
         GeneralShipData gsd = new GeneralShipData();
 
