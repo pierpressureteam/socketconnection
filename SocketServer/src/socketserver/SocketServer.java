@@ -190,6 +190,10 @@ public class SocketServer
         double lowest = 0;
         double highest = 0;
 
+        boolean oneSuccess = false;
+        boolean twoSuccess = false;
+        boolean threeSuccess = false;
+
         Connection conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
         PreparedStatement ps = conn.prepareCall("SELECT AVG(co2_submission) FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ?;");
         PreparedStatement lowestPs = conn.prepareCall("SELECT co2_submission FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ? ORDER BY co2_submission ASC LIMIT 1;");
@@ -204,21 +208,28 @@ public class SocketServer
         while (rs.next())
         {
             average = rs.getDouble(1);
+            oneSuccess = true;
         }
         while (rs2.next())
         {
             lowest = rs.getDouble(1);
+            twoSuccess = true;
         }
         while (rs3.next())
         {
             highest = rs.getDouble(1);
+            threeSuccess = true;
         }
 
-        gsd.setAverage(average);
-        gsd.setHighest(highest);
-        gsd.setLowest(lowest);
+        if (oneSuccess && twoSuccess && threeSuccess)
+        {
+            gsd.setAverage(average);
+            gsd.setHighest(highest);
+            gsd.setLowest(lowest);
 
-        return gsd;
+            return gsd;
+        }
+        return null;
     }
 
     public Ship getLastShipData(int MMSI) throws SQLException
@@ -303,7 +314,6 @@ public class SocketServer
             ship.setSpeed(speed);
             ship.setEpochTime(time);
             ship.setCarbonFootprint(co2);
-            
 
             shipList.add(ship);
         }
