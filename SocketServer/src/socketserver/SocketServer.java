@@ -331,7 +331,7 @@ public class SocketServer
             ship.setEpochTime(time);
             ship.setCarbonFootprint(co2);
 
-            if(ship.getSpeed() < checkNewSpeed){
+            if(ship.getSpeed() > checkNewSpeed){
                 checkNewSpeed = checkNewSpeed + 0.5;
                 shipList.add(ship);
             }
