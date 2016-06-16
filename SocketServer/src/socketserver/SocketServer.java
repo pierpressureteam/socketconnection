@@ -202,7 +202,7 @@ public class SocketServer
         ps.setInt(1, ship.getMMSI());
         lowestPs.setInt(1, ship.getMMSI());
         highestPs.setInt(1, ship.getMMSI());
-        
+
         GeneralShipData gsd = new GeneralShipData();
 
         ResultSet rs = ps.executeQuery();
@@ -212,28 +212,22 @@ public class SocketServer
         while (rs.next())
         {
             average = rs.getDouble(1);
-            oneSuccess = true;
         }
         while (rs2.next())
         {
             lowest = rs.getDouble(1);
-            twoSuccess = true;
         }
         while (rs3.next())
         {
             highest = rs.getDouble(1);
-            threeSuccess = true;
         }
 
-        if (oneSuccess && twoSuccess && threeSuccess)
-        {
-            gsd.setAverage(average);
-            gsd.setHighest(highest);
-            gsd.setLowest(lowest);
+        gsd.setAverage(average);
+        gsd.setHighest(highest);
+        gsd.setLowest(lowest);
 
-            return gsd;
-        }
-        return null;
+        return gsd;
+
     }
 
     public Ship getLastShipData(int MMSI) throws SQLException
