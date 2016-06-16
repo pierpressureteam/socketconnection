@@ -189,6 +189,7 @@ public class SocketServer
         double average = 0;
         double lowest = 0;
         double highest = 0;
+        String type = "";
 
         boolean oneSuccess = false;
         boolean twoSuccess = false;
@@ -198,17 +199,29 @@ public class SocketServer
         PreparedStatement ps = conn.prepareCall("SELECT AVG(co2_submission) FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ?;");
         PreparedStatement lowestPs = conn.prepareCall("SELECT co2_submission FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ? ORDER BY co2_submission ASC LIMIT 1;");
         PreparedStatement highestPs = conn.prepareCall("SELECT co2_submission FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ? ORDER BY co2_submission DESC LIMIT 1;");
-
-        ps.setInt(1, ship.getMMSI());
-        lowestPs.setInt(1, ship.getMMSI());
-        highestPs.setInt(1, ship.getMMSI());
+        PreparedStatement shipType = conn.prepareStatement("SELECT typebigname FROM shiptype, ships WHERE ships.mmsi = ? AND ships.shiptype_typename = shiptype.typename;");
+        
+        shipType.setInt(1, ship.getMMSI());
+       
 
         GeneralShipData gsd = new GeneralShipData();
 
+        ResultSet shipsType = shipType.executeQuery();
+        
+        while(shipsType.next()){
+            type = shipsType.getString(1);
+        }
+        
+        ps.setString(1, type);
+        lowestPs.setString(1, type);
+        highestPs.setString(1, type);
+        
         ResultSet rs = ps.executeQuery();
         ResultSet rs2 = lowestPs.executeQuery();
         ResultSet rs3 = highestPs.executeQuery();
 
+        
+        
         while (rs.next())
         {
             average = rs.getDouble(1);
