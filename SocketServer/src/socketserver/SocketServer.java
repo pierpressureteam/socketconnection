@@ -345,7 +345,7 @@ public class SocketServer
 
         Connection conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
 
-        PreparedStatement ps = conn.prepareStatement("SELECT ships_mmsi,current_time_ais,x_coordinates,y_coordinates,co2_submission,speed FROM aisinformation WHERE ships_mmsi = ? ORDER BY current_time_ais DESC LIMIT 100;");
+        PreparedStatement ps = conn.prepareStatement("SELECT ships_mmsi,current_time_ais,x_coordinates,y_coordinates,co2_submission,speed FROM aisinformation WHERE ships_mmsi = ? ORDER BY current_time_ais DESC LIMIT 500;");
 
         ps.setInt(1, MMSI);
         ArrayList<Ship> shipList = new ArrayList();
