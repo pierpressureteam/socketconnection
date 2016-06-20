@@ -259,13 +259,13 @@ public class SocketServer
         double carbonFootprint = 0;
         double latitude = 0;
         double longitude = 0;
-        Date dateTime = new Date();
+        long epoch = 0;
         double speed = 0;
 
         while (rs.next())
         {
             MMSI = rs.getInt(1);
-            dateTime = rs.getDate(2);
+            epoch = rs.getLong(2);
             latitude = rs.getDouble(3);
             longitude = rs.getDouble(4);
             carbonFootprint = rs.getDouble(5);
@@ -274,7 +274,7 @@ public class SocketServer
 
         Ship ship = new Ship(MMSI);
         ship.setCarbonFootprint(carbonFootprint);
-        ship.setDateTime(dateTime);
+        ship.setEpochTime(epoch);
         ship.setLatitude(latitude);
         ship.setLongitude(longitude);
         ship.setSpeed(speed);
