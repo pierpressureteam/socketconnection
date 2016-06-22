@@ -81,4 +81,36 @@ public class Ship extends SocketObject implements Serializable
         return carbonFootprint;
     }
 
+    public void setCarbonFootprint(double carbonFootprint)
+    {
+        this.carbonFootprint = carbonFootprint;
+    }
+
+    public void setLatitude(double latitude)
+    {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude)
+    {
+        this.longitude = longitude;
+    }
+
+    public void setEpochTime(long epochTime)
+    {
+        this.epochTime = epochTime;
+    }
+
+    public void setDateTime(Date dateTime)
+    {
+        this.dateTime = dateTime;
+    }
+
+    public void setSpeed(double speed)
+    {
+        this.speed = speed;
+    }
+
+    
+    
 }

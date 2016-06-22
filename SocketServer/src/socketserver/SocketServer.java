@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.ArrayList;
+import java.util.Date;
 import objectslibrary.Ship;
 import static socketserver.DatabaseConnection.myUrl;
 import static socketserver.DatabaseConnection.password;
@@ -27,7 +28,7 @@ public class SocketServer
 {
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final int PORT = 32008;
+    private static final int PORT = 32007;
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException
     {
@@ -145,8 +146,48 @@ public class SocketServer
                 // Get all the available ship types from the database.
                 return getShipTypesAvailable();
             }
+            if (method == 6)
+            {
+                // Get the very last entry for a ship.
+                Ship ship = (Ship) sow.getSocketObject();
+                return getLastShipData(ship.getMMSI());
+            }
         }
         return "Invalid method call.";
+    }
+
+    public Ship getLastShipData(int MMSI) throws SQLException
+    {
+        Connection conn = DriverManager.getConnection(myUrl, username, password);
+        PreparedStatement ps = conn.prepareStatement("select ships_mmsi,current_time_ais,x_coordinates,y_coordinates,co2_submission, speed from aisinformation WHERE ships_mmsi = ? LIMIT 1;");
+
+        ps.setInt(1, MMSI);
+        
+        ResultSet rs = ps.executeQuery();
+
+        double carbonFootprint = 0;
+        double latitude = 0;
+        double longitude = 0;
+        Date dateTime = new Date();
+        double speed = 0;
+        
+        while(rs.next()){
+            MMSI = rs.getInt(1);
+            dateTime = rs.getDate(2);
+            latitude = rs.getDouble(3);
+            longitude = rs.getDouble(4);
+            carbonFootprint = rs.getDouble(5);
+            speed = rs.getDouble(6);
+        }
+        
+        Ship ship = new Ship(MMSI);
+        ship.setCarbonFootprint(carbonFootprint);
+        ship.setDateTime(dateTime);
+        ship.setLatitude(latitude);
+        ship.setLongitude(longitude);
+        ship.setSpeed(speed);
+
+        return ship;
     }
 
     public ArrayList<String[]> getShipTypesAvailable() throws SQLException
@@ -179,7 +220,7 @@ public class SocketServer
     {
         Connection conn = DriverManager.getConnection(myUrl, username, password);
 
-        PreparedStatement ps = conn.prepareStatement("SELECT ships_mmsi,speed,current_time_ais,co2_submission from aisinformation WHERE ships_mmsi = ?;");
+        PreparedStatement ps = conn.prepareStatement("SELECT ships_mmsi,speed,current_time_ais,co2_submission from aisinformation WHERE ships_mmsi = ? ORDER BY speed;");
 
         ps.setInt(1, MMSI);
 
@@ -206,7 +247,7 @@ public class SocketServer
 
         Connection conn = DriverManager.getConnection(myUrl, username, password);
 
-        PreparedStatement ps = conn.prepareStatement("select ships_mmsi,current_time_ais,x_coordinates,y_coordinates,co2_submission from aisinformation WHERE ships_mmsi = ?;");
+        PreparedStatement ps = conn.prepareStatement("select ships_mmsi,current_time_ais,x_coordinates,y_coordinates,co2_submission from aisinformation WHERE ships_mmsi = ? LIMIT 100;");
 
         ps.setInt(1, MMSI);
         ArrayList<Ship> shipList = new ArrayList();
@@ -298,15 +339,15 @@ public class SocketServer
         ps.setString(1, user.getUsername());
         ps.setString(2, user.getPassword());
         ps.setString(3, user.getUsername());
-        
+
         int shipMMSI = 0;
 
         ResultSet rs = ps.executeQuery();
-        while(rs.next()){
+        while (rs.next())
+        {
             shipMMSI = rs.getInt(1);
         }
-        
-        
+
         System.out.println(shipMMSI + " -- MMSI to sent to user.");
         System.out.println(ps.toString() + " -- The prepared statement.");
         System.out.println(user.getUsername());
