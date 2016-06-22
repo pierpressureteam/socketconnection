@@ -8,9 +8,10 @@ import java.io.Serializable;
  */
 public class SocketObjectWrapper implements Serializable
 {
+
     private final SocketObject socketObject;
     private final int methodToCall;
-  
+
     public SocketObjectWrapper(SocketObject so, int method)
     {
         this.socketObject = so;
@@ -25,5 +26,5 @@ public class SocketObjectWrapper implements Serializable
     public int getMethodToCall()
     {
         return methodToCall;
-    } 
+    }
 }

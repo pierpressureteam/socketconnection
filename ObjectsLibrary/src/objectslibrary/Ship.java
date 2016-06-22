@@ -10,14 +10,21 @@ import java.util.Date;
 public class Ship extends SocketObject implements Serializable
 {
 
-    final private int MMSI;
-    private double carbonFootprint;
-    private double latitude;
-    private double longitude;
-    private long epochTime;
-    private Date dateTime;
-    private double speed;
+    private int MMSI;
+    private double carbonFootprint = 0;
+    private double latitude = 0;
+    private double longitude = 0;
+    private long epochTime = 0;
+    private Date dateTime = new Date();
+    private double speed = 0;
 
+<<<<<<< HEAD
+=======
+    public Ship(){
+        
+    }
+    
+>>>>>>> 35364143e11227216e6b8c1403b265d30f018d54
     public Ship(int MMSI, long epochTime, double speed, double co2)
     {
         this.carbonFootprint = co2;
@@ -41,8 +48,23 @@ public class Ship extends SocketObject implements Serializable
         this.epochTime = time;
         this.dateTime = convertEpochToDate(time);
     }
-    
-    public double getSpeed(){
+
+    @Override
+    public String toString()
+    {
+        String ship = "";
+        ship += "Carbon footprint: " + carbonFootprint;
+        ship += " MMSI: " + MMSI;
+        ship += " Latitude: " + latitude;
+        ship += " Longitude: " + longitude;
+        ship += " Epoch time: " + epochTime;
+        ship += " Date: " + dateTime.toString();
+
+        return ship;
+    }
+
+    public double getSpeed()
+    {
         return speed;
     }
 
@@ -98,6 +120,10 @@ public class Ship extends SocketObject implements Serializable
 
     public void setEpochTime(long epochTime)
     {
+<<<<<<< HEAD
+=======
+        this.dateTime = convertEpochToDate(epochTime);
+>>>>>>> 35364143e11227216e6b8c1403b265d30f018d54
         this.epochTime = epochTime;
     }
 
@@ -108,9 +134,15 @@ public class Ship extends SocketObject implements Serializable
 
     public void setSpeed(double speed)
     {
+<<<<<<< HEAD
         this.speed = speed;
     }
 
     
     
+=======
+        this.speed = speed * 3.6;
+    }
+
+>>>>>>> 35364143e11227216e6b8c1403b265d30f018d54
 }

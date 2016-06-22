@@ -3,22 +3,31 @@ package socketserver;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
 import java.net.ServerSocket;
 import java.net.Socket;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+
 import java.util.ArrayList;
 import java.util.Date;
+<<<<<<< HEAD
+=======
+import objectslibrary.GeneralShipData;
+
+>>>>>>> 35364143e11227216e6b8c1403b265d30f018d54
 import objectslibrary.Ship;
-import static socketserver.DatabaseConnection.myUrl;
-import static socketserver.DatabaseConnection.password;
-import static socketserver.DatabaseConnection.username;
 import objectslibrary.User;
 import objectslibrary.SocketObjectWrapper;
+
+import static socketserver.DatabaseConnection.DBURL;
+import static socketserver.DatabaseConnection.PASSWORD;
+import static socketserver.DatabaseConnection.USERNAME;
 
 /**
  *
@@ -85,14 +94,27 @@ public class SocketServer
         {
             received = (SocketObjectWrapper) in.readObject();
             checkedObject = checkObject(received);
-        } catch (Exception ex)
+        } catch (IOException | ClassNotFoundException | SQLException ex)
         {
             System.out.println(ex.getMessage());
         }
 
-        System.out.println("Server recieved object: " + received + " from Client");
+        if (received != null)
+        {
+            System.out.println("Server recieved object: " + received.toString() + " from client.");
 
-        System.out.println("Server sending point: " + checkedObject + " to Client");
+        } else
+        {
+            System.out.println("Server received object: null from client.");
+        }
+        if (checkedObject != null)
+        {
+            System.out.println("Server sending object: " + checkedObject.toString() + " to client.");
+        } else
+        {
+            System.out.println("Server sending object: null to client.");
+        }
+
         out.writeObject(checkedObject);
         out.flush();
 
@@ -139,7 +161,7 @@ public class SocketServer
             {
                 // Get speed of a ship based on MMSI
                 Ship ship = (Ship) sow.getSocketObject();
-                return getSpeedData(ship.getMMSI());
+                return getSortedSpeedData(ship.getMMSI());
             }
             if (method == 5)
             {
@@ -152,8 +174,118 @@ public class SocketServer
                 Ship ship = (Ship) sow.getSocketObject();
                 return getLastShipData(ship.getMMSI());
             }
+<<<<<<< HEAD
+=======
+            if (method == 7)
+            {
+                // Get average of ship category.
+                Ship ship = (Ship) sow.getSocketObject();
+                return getCategoryAverage(ship);
+            }
+            System.err.print("Invalid method was called by client.");
+            return "Invalid method call.";
+>>>>>>> 35364143e11227216e6b8c1403b265d30f018d54
         }
-        return "Invalid method call.";
+        System.err.print("SocketObjectWrapper received by client was null.");
+        return "SocketObjectWrapper received was null";
+    }
+
+    public GeneralShipData getCategoryAverage(Ship ship) throws SQLException
+    {
+        double average = 0;
+        double lowest = 0;
+        double highest = 0;
+        String type = "";
+
+        boolean oneSuccess = false;
+        boolean twoSuccess = false;
+        boolean threeSuccess = false;
+
+        Connection conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
+        PreparedStatement ps = conn.prepareCall("SELECT AVG(co2_submission) FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ?;");
+        PreparedStatement lowestPs = conn.prepareCall("SELECT co2_submission FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ? ORDER BY co2_submission ASC LIMIT 1;");
+        PreparedStatement highestPs = conn.prepareCall("SELECT co2_submission FROM aisinformation, ships, shiptype WHERE ships.mmsi = aisinformation.ships_mmsi AND ships.shiptype_typename = shiptype.typename AND shiptype.typebigname = ? ORDER BY co2_submission DESC LIMIT 1;");
+        PreparedStatement shipType = conn.prepareStatement("SELECT typebigname FROM shiptype, ships WHERE ships.mmsi = ? AND ships.shiptype_typename = shiptype.typename;");
+        
+        shipType.setInt(1, ship.getMMSI());
+       
+
+        GeneralShipData gsd = new GeneralShipData();
+
+        ResultSet shipsType = shipType.executeQuery();
+        
+        while(shipsType.next()){
+            type = shipsType.getString(1);
+        }
+        
+        ps.setString(1, type);
+        lowestPs.setString(1, type);
+        highestPs.setString(1, type);
+        
+        ResultSet rs = ps.executeQuery();
+        ResultSet rs2 = lowestPs.executeQuery();
+        ResultSet rs3 = highestPs.executeQuery();
+
+        
+        
+        while (rs.next())
+        {
+            average = rs.getDouble(1);
+        }
+        while (rs2.next())
+        {
+            lowest = rs2.getDouble(1);
+        }
+        while (rs3.next())
+        {
+            highest = rs3.getDouble(1);
+        }
+
+        System.out.println(average);
+        System.out.println(highest);
+        System.out.println(lowest);
+        
+        gsd.setAverage(average);
+        gsd.setHighest(highest);
+        gsd.setLowest(lowest);
+
+        return gsd;
+
+    }
+
+    public Ship getLastShipData(int MMSI) throws SQLException
+    {
+        Connection conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
+        PreparedStatement ps = conn.prepareStatement("SELECT ships_mmsi,current_time_ais,x_coordinates,y_coordinates,co2_submission, speed FROM aisinformation WHERE ships_mmsi = ? ORDER BY current_time_ais DESC LIMIT 1;");
+
+        ps.setInt(1, MMSI);
+
+        ResultSet rs = ps.executeQuery();
+
+        double carbonFootprint = 0;
+        double latitude = 0;
+        double longitude = 0;
+        long epoch = 0;
+        double speed = 0;
+
+        while (rs.next())
+        {
+            MMSI = rs.getInt(1);
+            epoch = rs.getLong(2);
+            latitude = rs.getDouble(3);
+            longitude = rs.getDouble(4);
+            carbonFootprint = rs.getDouble(5);
+            speed = rs.getDouble(6);
+        }
+
+        Ship ship = new Ship(MMSI);
+        ship.setCarbonFootprint(carbonFootprint);
+        ship.setEpochTime(epoch);
+        ship.setLatitude(latitude);
+        ship.setLongitude(longitude);
+        ship.setSpeed(speed);
+
+        return ship;
     }
 
     public Ship getLastShipData(int MMSI) throws SQLException
@@ -193,7 +325,7 @@ public class SocketServer
     public ArrayList<String[]> getShipTypesAvailable() throws SQLException
     {
 
-        Connection conn = DriverManager.getConnection(myUrl, username, password);
+        Connection conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
 
         ArrayList<String[]> list = new ArrayList();
 
@@ -216,27 +348,46 @@ public class SocketServer
         return list;
     }
 
-    public ArrayList<Ship> getSpeedData(int MMSI) throws SQLException
+    public ArrayList<Ship> getSortedSpeedData(int MMSI) throws SQLException
     {
-        Connection conn = DriverManager.getConnection(myUrl, username, password);
+        Connection conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
 
+<<<<<<< HEAD
         PreparedStatement ps = conn.prepareStatement("SELECT ships_mmsi,speed,current_time_ais,co2_submission from aisinformation WHERE ships_mmsi = ? ORDER BY speed;");
+=======
+        PreparedStatement ps = conn.prepareStatement("SELECT DISTINCT speed, current_time_ais, co2_submission FROM aisinformation WHERE ships_mmsi = ? ORDER BY speed;");
+>>>>>>> 35364143e11227216e6b8c1403b265d30f018d54
 
         ps.setInt(1, MMSI);
 
         ResultSet rs = ps.executeQuery();
         ArrayList<Ship> shipList = new ArrayList();
-
+        
+        Double checkNewSpeed = 0.0;
         while (rs.next())
         {
+<<<<<<< HEAD
             int mmsi = rs.getInt(1);
             double speed = rs.getDouble(2);
             long time = rs.getLong(3);
             double co2 = rs.getDouble(4);
 
             Ship ship = new Ship(mmsi, time, speed, co2);
+=======
+            double speed = rs.getDouble(1);
+            long time = rs.getLong(2);
+            double co2 = rs.getDouble(3);
 
-            shipList.add(ship);
+            Ship ship = new Ship();
+            ship.setSpeed(speed);
+            ship.setEpochTime(time);
+            ship.setCarbonFootprint(co2);
+>>>>>>> 35364143e11227216e6b8c1403b265d30f018d54
+
+            if(ship.getSpeed() > checkNewSpeed){
+                checkNewSpeed = checkNewSpeed + 0.5;
+                shipList.add(ship);
+            }
         }
 
         return shipList;
@@ -245,9 +396,13 @@ public class SocketServer
     public ArrayList<Ship> getShipEmissionLocationData(int MMSI) throws SQLException
     {
 
-        Connection conn = DriverManager.getConnection(myUrl, username, password);
+        Connection conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
 
+<<<<<<< HEAD
         PreparedStatement ps = conn.prepareStatement("select ships_mmsi,current_time_ais,x_coordinates,y_coordinates,co2_submission from aisinformation WHERE ships_mmsi = ? LIMIT 100;");
+=======
+        PreparedStatement ps = conn.prepareStatement("SELECT ships_mmsi,current_time_ais,x_coordinates,y_coordinates,co2_submission,speed FROM aisinformation WHERE ships_mmsi = ? ORDER BY current_time_ais DESC LIMIT 250;");
+>>>>>>> 35364143e11227216e6b8c1403b265d30f018d54
 
         ps.setInt(1, MMSI);
         ArrayList<Ship> shipList = new ArrayList();
@@ -260,6 +415,7 @@ public class SocketServer
             double x = rs.getDouble(3);
             double y = rs.getDouble(4);
             double emission = rs.getDouble(5);
+            double speed = rs.getDouble(6);
             Ship ship = new Ship(mmsi, x, y, time, emission);
 
             shipList.add(ship);
@@ -272,16 +428,18 @@ public class SocketServer
     /**
      *
      * @param user to register, has to be of type User.
-     * @return a boolean depending on whether the method succeeded or not.
+     * @return isSuccessful as a boolean.
      * @throws SQLException
      *
      */
     public boolean registerUser(User user) throws SQLException
     {
-        Connection conn = DriverManager.getConnection(myUrl, username, password);
+        Connection conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
         boolean oneSuccess = false;
         boolean twoSuccess = false;
         boolean threeSuccess = false;
+
+        boolean isSuccessful = false;
 
         PreparedStatement ps = conn.prepareStatement("INSERT INTO usersaccount(username, password, email) VALUES(?, ?, ?);");
         PreparedStatement ps2 = conn.prepareStatement("INSERT INTO ships(mmsi, shiptype_typename) VALUES(?, ?);");
@@ -316,12 +474,12 @@ public class SocketServer
         // This means that to ensure we return true when the method succeeds we have to check whether it is either false or true.
         if (oneSuccess && twoSuccess && threeSuccess)
         {
-            return true;
+            isSuccessful = true;
+            return isSuccessful;
         }
         // if this return is reached, this means the query did not get executed properly. The method will have returned null.
         conn.rollback(sp);
-        return false;
-
+        return isSuccessful;
     }
 
     /**
@@ -332,7 +490,7 @@ public class SocketServer
      */
     public int validateUser(User user) throws SQLException
     {
-        Connection conn = DriverManager.getConnection(myUrl, username, password);
+        Connection conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
 
         PreparedStatement ps = conn.prepareStatement("SELECT uhs.ships_mmsi FROM usersaccount u, usersaccount_has_ships uhs WHERE u.username = ? AND u.password = ? AND uhs.usersaccount_username = ? LIMIT 1;");
 
@@ -347,11 +505,14 @@ public class SocketServer
         {
             shipMMSI = rs.getInt(1);
         }
+<<<<<<< HEAD
 
         System.out.println(shipMMSI + " -- MMSI to sent to user.");
         System.out.println(ps.toString() + " -- The prepared statement.");
         System.out.println(user.getUsername());
         System.out.println(user.getPassword());
+=======
+>>>>>>> 35364143e11227216e6b8c1403b265d30f018d54
 
         return shipMMSI;
     }

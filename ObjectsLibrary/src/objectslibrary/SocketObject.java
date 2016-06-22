@@ -8,5 +8,5 @@ import java.io.Serializable;
  */
 public class SocketObject implements Serializable
 {
-    
+
 }
